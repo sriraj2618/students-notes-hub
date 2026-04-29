@@ -15,11 +15,6 @@ BUCKET = "notes-files"
 
 # ── Allowed types ──────────────────────────────────────────────────────────────
 ALLOWED_EXTENSIONS = {".pdf", ".ppt", ".pptx"}
-ALLOWED_MIME = {
-    "application/pdf",
-    "application/vnd.ms-powerpoint",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-}
 
 
 def validate_file(uploaded_file) -> tuple[bool, str]:
@@ -36,29 +31,18 @@ def validate_file(uploaded_file) -> tuple[bool, str]:
 def upload_file(client: Client, uploaded_file, subject: str) -> dict:
     """
     Upload a file to Supabase Storage and return metadata.
-
-    Returns:
-        {
-            "storage_path" : str,   # path inside bucket
-            "public_url"   : str,   # publicly accessible URL
-            "file_size_kb" : float,
-            "file_type"    : str,   # 'PDF' | 'PPT'
-            "original_name": str,
-        }
-
-    Raises:
-        Exception on upload failure.
     """
+
     ext = os.path.splitext(uploaded_file.name)[1].lower()
     unique_id = uuid.uuid4().hex[:10]
     safe_name = uploaded_file.name.replace(" ", "_")
     storage_path = f"{subject}/{unique_id}_{safe_name}"
 
-    # Read bytes
+    # Read file bytes
     uploaded_file.seek(0)
     file_bytes = uploaded_file.read()
 
-    # Determine content type
+    # Content type
     content_type_map = {
         ".pdf":  "application/pdf",
         ".ppt":  "application/vnd.ms-powerpoint",
@@ -66,17 +50,19 @@ def upload_file(client: Client, uploaded_file, subject: str) -> dict:
     }
     content_type = content_type_map.get(ext, "application/octet-stream")
 
-    # Upload to Supabase Storage
-    response = client.storage.from_(BUCKET).upload(
+    # Upload
+    client.storage.from_(BUCKET).upload(
         path=storage_path,
         file=file_bytes,
         file_options={"content-type": content_type, "upsert": "false"},
     )
 
-    # Get public URL
+    # Public URL
     public_url = client.storage.from_(BUCKET).get_public_url(storage_path)
 
-    file_size_kb = round(len(file_bytes) / 1024, 1)
+    # ✅ FIXED: integer file size (no float error)
+    file_size_kb = len(file_bytes) // 1024
+
     file_type = "PDF" if ext == ".pdf" else "PPT"
 
     return {
@@ -89,7 +75,7 @@ def upload_file(client: Client, uploaded_file, subject: str) -> dict:
 
 
 def delete_file(client: Client, storage_path: str) -> bool:
-    """Delete a file from the bucket. Returns True on success."""
+    """Delete a file from the bucket."""
     try:
         client.storage.from_(BUCKET).remove([storage_path])
         return True
