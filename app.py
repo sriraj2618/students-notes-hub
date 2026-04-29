@@ -46,7 +46,7 @@ ENGINEERING_SUBJECTS = [
     "Probability and Statistics"
 ]
 
-# ── Simple UI Styling ───────────────────
+# ── UI Styling ─────────────────────────
 st.markdown("""
 <style>
 .block-container {
@@ -73,13 +73,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── Init ────────────────────────────────
+# ── Init ───────────────────────────────
 client = get_supabase_client()
 
 if "page" not in st.session_state:
     st.session_state.page = "Browse"
 
-# ── Sidebar ─────────────────────────────
+# ── Sidebar ────────────────────────────
 st.sidebar.title("Notes Hub")
 
 if st.sidebar.button("Browse Notes"):
@@ -95,7 +95,7 @@ subject_filter = st.sidebar.selectbox(
     ["All"] + ENGINEERING_SUBJECTS
 )
 
-# ── Upload Page ─────────────────────────
+# ── Upload Page ────────────────────────
 if st.session_state.page == "Upload":
 
     st.title("Upload Note")
@@ -132,7 +132,7 @@ if st.session_state.page == "Upload":
                 except Exception as e:
                     st.error(f"Error: {e}")
 
-# ── Browse Page ─────────────────────────
+# ── Browse Page ────────────────────────
 elif st.session_state.page == "Browse":
 
     st.title("Browse Notes")
@@ -141,11 +141,11 @@ elif st.session_state.page == "Browse":
 
     notes = get_all_notes(client)
 
-    # Filter by subject
+    # Filter
     if subject_filter != "All":
         notes = [n for n in notes if n["subject"] == subject_filter]
 
-    # Search filter
+    # Search
     if search:
         notes = [
             n for n in notes
