@@ -11,7 +11,7 @@ from datetime import datetime
 # ── Page config (must be first Streamlit call) ─────────────────────────────────
 st.set_page_config(
     page_title="Student Notes Hub",
-    page_icon="",
+    page_icon="📖",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -39,32 +39,33 @@ from utils import (
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# GLOBAL CSS  —  clean minimal style
+# GLOBAL CSS  —  warm cream + ink aesthetic with editorial typography
 # ══════════════════════════════════════════════════════════════════════════════
 
 def inject_css():
     st.markdown(
         """
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
         /* ── Tokens ── */
         :root {
-            --cream:   #fafafa;
-            --paper:   #f4f4f5;
-            --ink:     #18181b;
-            --ink2:    #3f3f46;
-            --muted:   #71717a;
-            --border:  #e4e4e7;
-            --accent:  #2563eb;
-            --accent2: #16a34a;
+            --cream:   #faf7f2;
+            --paper:   #f2ede4;
+            --ink:     #1a1510;
+            --ink2:    #3d3529;
+            --muted:   #8a7f72;
+            --border:  #ddd6ca;
+            --accent:  #c8401a;   /* terracotta red */
+            --accent2: #2e6e4e;   /* forest green */
+            --blue:    #1d4ed8;
             --surface: #ffffff;
-            --radius:  10px;
-            --shadow:  0 1px 8px rgba(0,0,0,0.06);
+            --radius:  12px;
+            --shadow:  0 2px 16px rgba(26,21,16,0.08);
         }
 
         html, body, [class*="css"] {
-            font-family: 'Inter', sans-serif !important;
+            font-family: 'DM Sans', sans-serif !important;
             background: var(--cream) !important;
             color: var(--ink) !important;
         }
@@ -81,7 +82,7 @@ def inject_css():
             background: var(--ink) !important;
             border-right: none !important;
         }
-        [data-testid="stSidebar"] * { color: #f4f4f5 !important; }
+        [data-testid="stSidebar"] * { color: #f0ebe3 !important; }
         [data-testid="stSidebar"] .block-container { padding: 1.8rem 1.4rem !important; }
         [data-testid="stSidebar"] hr { border-color: rgba(255,255,255,0.12) !important; }
 
@@ -89,7 +90,7 @@ def inject_css():
         [data-testid="stSidebar"] [data-baseweb="select"] > div {
             background: rgba(255,255,255,0.08) !important;
             border-color: rgba(255,255,255,0.2) !important;
-            color: #f4f4f5 !important;
+            color: #f0ebe3 !important;
         }
 
         /* ── Main inputs ── */
@@ -100,12 +101,12 @@ def inject_css():
             border: 1.5px solid var(--border) !important;
             border-radius: 8px !important;
             color: var(--ink) !important;
-            font-family: 'Inter', sans-serif !important;
+            font-family: 'DM Sans', sans-serif !important;
         }
         .stTextInput > div > div > input:focus,
         .stTextArea > div > div > textarea:focus {
             border-color: var(--accent) !important;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.12) !important;
+            box-shadow: 0 0 0 3px rgba(200,64,26,0.12) !important;
         }
 
         /* ── Primary button ── */
@@ -114,7 +115,7 @@ def inject_css():
             color: var(--cream) !important;
             border: none !important;
             border-radius: 8px !important;
-            font-family: 'Inter', sans-serif !important;
+            font-family: 'DM Sans', sans-serif !important;
             font-weight: 600 !important;
             letter-spacing: 0.02em !important;
             transition: all 0.2s ease !important;
@@ -122,7 +123,7 @@ def inject_css():
         .stButton > button:hover {
             background: var(--accent) !important;
             transform: translateY(-1px) !important;
-            box-shadow: 0 4px 14px rgba(37,99,235,0.2) !important;
+            box-shadow: 0 4px 14px rgba(200,64,26,0.25) !important;
         }
 
         /* ── File uploader ── */
@@ -147,15 +148,15 @@ def inject_css():
             overflow: hidden;
         }
         .note-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(26,21,16,0.12);
         }
         .note-card::after {
             content: '';
             position: absolute;
             bottom: 0; left: 0; right: 0;
             height: 3px;
-            background: var(--card-accent, #2563eb);
+            background: var(--card-accent, #c8401a);
             border-radius: 0 0 var(--radius) var(--radius);
         }
         .card-eyebrow {
@@ -183,7 +184,8 @@ def inject_css():
             border: 1px solid var(--border);
         }
         .card-title {
-            font-size: 1rem;
+            font-family: 'Fraunces', serif;
+            font-size: 1.05rem;
             font-weight: 600;
             color: var(--ink);
             line-height: 1.35;
@@ -238,7 +240,7 @@ def inject_css():
             color: #fff;
             border: 1.5px solid var(--accent);
         }
-        .btn-dl:hover { background: #1d4ed8; }
+        .btn-dl:hover { background: #a83215; }
 
         /* ── Stat card ── */
         .stat-pill {
@@ -250,14 +252,15 @@ def inject_css():
             margin-bottom: 0.5rem;
         }
         .stat-num {
+            font-family: 'Fraunces', serif;
             font-size: 1.9rem;
             font-weight: 700;
-            color: #f4f4f5;
+            color: #f0ebe3;
             line-height: 1;
         }
         .stat-label {
             font-size: 0.72rem;
-            color: rgba(244,244,245,0.5);
+            color: rgba(240,235,227,0.55);
             margin-top: 0.25rem;
             text-transform: uppercase;
             letter-spacing: 0.07em;
@@ -266,7 +269,8 @@ def inject_css():
         /* ── Page header ── */
         .page-header { margin-bottom: 1.8rem; }
         .page-header h1 {
-            font-size: 1.7rem;
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
             font-weight: 700;
             margin: 0;
             color: var(--ink);
@@ -286,7 +290,8 @@ def inject_css():
             margin: 1.5rem 0 1rem;
         }
         .sec-div span {
-            font-size: 0.95rem;
+            font-family: 'Fraunces', serif;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--ink2);
             white-space: nowrap;
@@ -319,7 +324,7 @@ def inject_css():
             border-radius: 8px;
             border: none;
             background: transparent;
-            color: rgba(244,244,245,0.7) !important;
+            color: rgba(240,235,227,0.7) !important;
             font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
@@ -327,8 +332,8 @@ def inject_css():
             transition: background 0.15s ease;
         }
         .nav-btn.active {
-            background: rgba(37,99,235,0.25) !important;
-            color: #93c5fd !important;
+            background: rgba(200,64,26,0.25) !important;
+            color: #f5c5b0 !important;
             font-weight: 600 !important;
         }
 
@@ -344,7 +349,7 @@ def inject_css():
             color: var(--muted) !important;
             border-radius: 7px !important;
             font-weight: 500 !important;
-            font-family: 'Inter', sans-serif !important;
+            font-family: 'DM Sans', sans-serif !important;
         }
         .stTabs [aria-selected="true"] {
             background: var(--ink) !important;
@@ -381,9 +386,10 @@ def inject_css():
             text-align: center; padding: 3rem 1rem;
             color: var(--muted);
         }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 0.8rem; }
         .empty-state h4 {
+            font-family: 'Fraunces', serif;
             color: var(--ink2); margin: 0 0 0.5rem;
-            font-size: 1rem; font-weight: 600;
         }
 
         /* ── Upload form panel ── */
@@ -448,11 +454,12 @@ def render_sidebar(client):
         st.markdown(
             """
             <div style="text-align:center;padding:0.5rem 0 1.6rem">
-                <div style="font-family:'Inter',sans-serif;font-size:1.3rem;
-                            font-weight:700;color:#f4f4f5;margin-top:0.3rem">
+                <div style="font-size:2.5rem">📖</div>
+                <div style="font-family:'Fraunces',serif;font-size:1.3rem;
+                            font-weight:700;color:#f0ebe3;margin-top:0.3rem">
                     Notes Hub
                 </div>
-                <div style="font-size:0.72rem;color:rgba(244,244,245,0.45);
+                <div style="font-size:0.72rem;color:rgba(240,235,227,0.45);
                             letter-spacing:0.1em;text-transform:uppercase;margin-top:0.2rem">
                     Student Edition
                 </div>
@@ -463,9 +470,9 @@ def render_sidebar(client):
 
         # ── Navigation ──
         pages = {
-            "Browse Notes": "Browse",
-            "Upload Note":  "Upload",
-            "Analytics":    "Analytics",
+            "🔍  Browse Notes": "Browse",
+            "⬆️  Upload Note":  "Upload",
+            "📊  Analytics":    "Analytics",
         }
         for label, key in pages.items():
             active_cls = "active" if st.session_state["page"] == key else ""
@@ -477,7 +484,7 @@ def render_sidebar(client):
 
         # ── Subject filter ──
         st.markdown(
-            "<div style='font-size:0.72rem;font-weight:600;color:rgba(244,244,245,0.4);"
+            "<div style='font-size:0.72rem;font-weight:600;color:rgba(240,235,227,0.4);"
             "letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem'>"
             "Filter by Subject</div>",
             unsafe_allow_html=True,
@@ -513,7 +520,7 @@ def render_sidebar(client):
         )
 
         st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("Refresh", use_container_width=True):
+        if st.button("🔄  Refresh", use_container_width=True):
             load_notes(client, force=True)
             st.rerun()
 
@@ -524,6 +531,7 @@ def render_sidebar(client):
 
 def note_card(note: dict):
     color = subject_color(note.get("subject", "Other"))
+    icon  = subject_icon(note.get("subject", "Other"))
     title = note.get("title", "Untitled")
     desc  = note.get("description") or "No description provided."
     subj  = note.get("subject", "Other")
@@ -532,24 +540,25 @@ def note_card(note: dict):
     ts    = format_timestamp(note.get("created_at"))
     url   = note.get("file_url", "#")
 
-    size_html = f"<span>{fsize}</span><span>·</span>" if fsize else ""
+    size_html = f"<span>📦 {fsize}</span><span>·</span>" if fsize else ""
 
     st.markdown(
         f"""
         <div class="note-card" style="--card-accent:{color}">
             <div class="card-eyebrow">
+                <span style="font-size:1.2rem">{icon}</span>
                 <span class="subj-badge" style="background:{color}">{subj}</span>
-                <span class="type-chip">{ftype}</span>
+                <span class="type-chip">{file_badge(ftype)} {ftype}</span>
             </div>
             <div class="card-title">{title}</div>
             <div class="card-desc">{desc}</div>
             <div class="card-meta">
-                <span>{ts}</span>
+                <span>🕐 {ts}</span>
                 {size_html}
             </div>
             <div class="card-actions">
-                <a href="{url}" target="_blank" class="btn-view">View</a>
-                <a href="{url}" download class="btn-dl">Download</a>
+                <a href="{url}" target="_blank" class="btn-view">👁 View</a>
+                <a href="{url}" download class="btn-dl">⬇ Download</a>
             </div>
         </div>
         """,
@@ -565,7 +574,7 @@ def render_browse(client):
     st.markdown(
         """
         <div class="page-header">
-            <h1>Browse Notes</h1>
+            <h1>📖 Browse Notes</h1>
             <p>Discover and download community-uploaded academic notes.</p>
         </div>
         """,
@@ -576,7 +585,7 @@ def render_browse(client):
     query = st.text_input(
         "search",
         value=st.session_state["search_query"],
-        placeholder="Search by title, subject, or keywords...",
+        placeholder="🔍  Search by title, subject, or keywords…",
         label_visibility="collapsed",
     )
     if query != st.session_state["search_query"]:
@@ -592,10 +601,10 @@ def render_browse(client):
     active_sub = st.session_state["subject_filter"]
     col_l, col_r = st.columns([6, 1])
     col_l.markdown(
-        f"<div style='color:#71717a;font-size:0.85rem;padding-top:0.4rem'>"
-        f"Showing <b style='color:#18181b'>{len(filtered)}</b> note(s)"
-        + (f" in <b style='color:#18181b'>{active_sub}</b>" if active_sub != "All" else "")
-        + (f" matching <b style='color:#18181b'>\"{query.strip()}\"</b>" if query.strip() else "")
+        f"<div style='color:#8a7f72;font-size:0.85rem;padding-top:0.4rem'>"
+        f"Showing <b style='color:#1a1510'>{len(filtered)}</b> note(s)"
+        + (f" in <b style='color:#1a1510'>{active_sub}</b>" if active_sub != "All" else "")
+        + (f" matching <b style='color:#1a1510'>\"{query.strip()}\"</b>" if query.strip() else "")
         + "</div>",
         unsafe_allow_html=True,
     )
@@ -606,8 +615,9 @@ def render_browse(client):
     if not filtered:
         st.markdown(
             "<div class='empty-state'>"
+            "<div class='icon'>📭</div>"
             "<h4>No notes found</h4>"
-            "<p>Try different search terms or upload the first note for this subject.</p>"
+            "<p>Try different search terms or upload the first note for this subject!</p>"
             "</div>",
             unsafe_allow_html=True,
         )
@@ -632,7 +642,7 @@ def render_upload(client):
     st.markdown(
         """
         <div class="page-header">
-            <h1>Upload a Note</h1>
+            <h1>⬆️ Upload a Note</h1>
             <p>Share your academic notes with the community. PDF and PPT/PPTX only.</p>
         </div>
         """,
@@ -643,8 +653,8 @@ def render_upload(client):
     if st.session_state.get("flash"):
         kind, msg = st.session_state["flash"]
         cls = {"success": "box-success", "error": "box-error", "info": "box-info"}[kind]
-        prefix = {"success": "Success:", "error": "Error:", "info": "Info:"}[kind]
-        st.markdown(f"<div class='{cls}'>{prefix} {msg}</div>", unsafe_allow_html=True)
+        icon = {"success": "✅", "error": "❌", "info": "ℹ️"}[kind]
+        st.markdown(f"<div class='{cls}'>{icon} {msg}</div>", unsafe_allow_html=True)
         st.session_state["flash"] = None
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -655,20 +665,20 @@ def render_upload(client):
         col_a, col_b = st.columns([3, 1])
         with col_a:
             title = st.text_input(
-                "Title *",
+                "📝 Title *",
                 placeholder="e.g. Binary Trees — Complete Notes with Examples",
             )
         with col_b:
-            subject = st.selectbox("Subject *", SUBJECTS)
+            subject = st.selectbox("📂 Subject *", SUBJECTS)
 
         description = st.text_area(
-            "Description (optional)",
-            placeholder="What does this cover? Which exam or chapter is it relevant to?",
+            "📄 Description (optional)",
+            placeholder="What does this cover? Which exam / chapter is it relevant to?",
             height=90,
         )
 
         uploaded_file = st.file_uploader(
-            "Attach File * (PDF or PPT/PPTX)",
+            "📎 Attach File * (PDF or PPT/PPTX)",
             type=["pdf", "ppt", "pptx"],
             help="Max recommended: 50 MB",
         )
@@ -676,7 +686,7 @@ def render_upload(client):
         st.markdown("</div>", unsafe_allow_html=True)
 
         submitted = st.form_submit_button(
-            "Upload Note", use_container_width=True
+            "🚀  Upload Note", use_container_width=True
         )
 
     if submitted:
@@ -693,11 +703,11 @@ def render_upload(client):
 
         if errors:
             for e in errors:
-                st.markdown(f"<div class='box-error'>Error: {e}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='box-error'>❌ {e}</div>", unsafe_allow_html=True)
             return
 
         # ── Upload to Storage ──
-        with st.spinner("Uploading file to Supabase Storage..."):
+        with st.spinner("☁️ Uploading file to Supabase Storage…"):
             try:
                 file_info = upload_file(client, uploaded_file, subject)
             except Exception as exc:
@@ -706,7 +716,7 @@ def render_upload(client):
                 return
 
         # ── Save metadata ──
-        with st.spinner("Saving metadata to database..."):
+        with st.spinner("💾 Saving metadata to database…"):
             try:
                 insert_note(
                     client,
@@ -742,7 +752,7 @@ def render_analytics(client):
     st.markdown(
         """
         <div class="page-header">
-            <h1>Analytics</h1>
+            <h1>📊 Analytics</h1>
             <p>Distribution of notes across subjects and recent upload activity.</p>
         </div>
         """,
@@ -752,7 +762,7 @@ def render_analytics(client):
     notes = load_notes(client)
     if not notes:
         st.markdown(
-            "<div class='box-info'>No data yet — upload your first note to see analytics.</div>",
+            "<div class='box-info'>No data yet — upload your first note to see analytics!</div>",
             unsafe_allow_html=True,
         )
         return
@@ -771,11 +781,11 @@ def render_analytics(client):
         (cols[3], ppts,             "PPT Files"),
     ]:
         col.markdown(
-            f"<div style='background:#fff;border:1.5px solid #e4e4e7;border-radius:10px;"
+            f"<div style='background:#fff;border:1.5px solid #ddd6ca;border-radius:12px;"
             f"padding:1rem 1.2rem;text-align:center'>"
-            f"<div style='font-size:2rem;font-weight:700;"
-            f"color:#2563eb;line-height:1'>{num}</div>"
-            f"<div style='font-size:0.76rem;color:#71717a;margin-top:0.3rem;"
+            f"<div style='font-family:Fraunces,serif;font-size:2rem;font-weight:700;"
+            f"color:#c8401a;line-height:1'>{num}</div>"
+            f"<div style='font-size:0.76rem;color:#8a7f72;margin-top:0.3rem;"
             f"text-transform:uppercase;letter-spacing:0.07em'>{label}</div></div>",
             unsafe_allow_html=True,
         )
@@ -795,11 +805,12 @@ def render_analytics(client):
 
     for subj, count in sorted_subs:
         color = subject_color(subj)
+        icon  = subject_icon(subj)
         pct   = count / max_count * 100
 
         l_col, b_col, n_col = st.columns([2, 7, 1])
         l_col.markdown(
-            f"<div style='padding-top:4px;font-size:0.85rem;font-weight:500'>{subj}</div>",
+            f"<div style='padding-top:4px;font-size:0.85rem;font-weight:500'>{icon} {subj}</div>",
             unsafe_allow_html=True,
         )
         b_col.markdown(
@@ -812,7 +823,7 @@ def render_analytics(client):
         )
         n_col.markdown(
             f"<div style='padding-top:4px;text-align:right;font-weight:700;"
-            f"color:#18181b;font-size:0.88rem'>{count}</div>",
+            f"color:#1a1510;font-size:0.88rem'>{count}</div>",
             unsafe_allow_html=True,
         )
 
@@ -825,6 +836,7 @@ def render_analytics(client):
 
     for note in notes[:6]:
         color = subject_color(note.get("subject", "Other"))
+        icon  = subject_icon(note.get("subject", "Other"))
         title = note.get("title", "Untitled")
         subj  = note.get("subject", "Other")
         ts    = format_timestamp(note.get("created_at"))
@@ -833,14 +845,15 @@ def render_analytics(client):
         st.markdown(
             f"""
             <div style="display:flex;align-items:center;gap:1rem;padding:0.75rem 1rem;
-                        background:#fff;border:1.5px solid #e4e4e7;border-radius:10px;
+                        background:#fff;border:1.5px solid #ddd6ca;border-radius:10px;
                         margin-bottom:0.5rem;border-left:4px solid {color}">
+                <span style="font-size:1.3rem">{icon}</span>
                 <div style="flex:1;min-width:0">
                     <div style="font-weight:600;white-space:nowrap;overflow:hidden;
                                 text-overflow:ellipsis;font-size:0.9rem">{title}</div>
-                    <div style="font-size:0.76rem;color:#71717a">{subj} · {fsize}</div>
+                    <div style="font-size:0.76rem;color:#8a7f72">{subj} · {fsize}</div>
                 </div>
-                <div style="font-size:0.76rem;color:#71717a;white-space:nowrap">{ts}</div>
+                <div style="font-size:0.76rem;color:#8a7f72;white-space:nowrap">{ts}</div>
             </div>
             """,
             unsafe_allow_html=True,
