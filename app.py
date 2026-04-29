@@ -1,85 +1,48 @@
+"""
+app.py
+Student Notes Hub — Clean Version (No Emojis + All Subjects)
+"""
+
 import streamlit as st
+from datetime import datetime
+
+st.set_page_config(
+    page_title="Student Notes Hub",
+    page_icon="",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
 from supabase_config import get_supabase_client
 from storage import upload_file, validate_file
-from database import insert_note, get_all_notes
+from database import (
+    insert_note,
+    get_all_notes,
+)
 
-# ── Page Config ─────────────────────────
-st.set_page_config(page_title="Notes Hub", layout="wide")
-
-# ── Subjects List ───────────────────────
-ENGINEERING_SUBJECTS = [
-    "Mathematics",
-    "Physics",
-    "Chemistry",
-    "Programming in C",
-    "Python Programming",
-    "Java Programming",
-    "Object Oriented Programming",
-    "Data Structures",
+# ── ALL SUBJECTS ─────────────────────────
+SUBJECTS = [
+    "Mathematics","Physics","Chemistry",
+    "Programming in C","Python Programming","Java Programming",
+    "Object Oriented Programming","Data Structures",
     "Design and Analysis of Algorithms",
-    "Database Management Systems",
-    "Operating Systems",
-    "Computer Networks",
-    "Software Engineering",
-    "Compiler Design",
-    "Theory of Computation",
-    "Artificial Intelligence",
-    "Machine Learning",
-    "Deep Learning",
-    "Data Science",
-    "Cloud Computing",
-    "Cyber Security",
-    "Distributed Systems",
-    "Web Development",
-    "Mobile App Development",
-    "DevOps",
-    "Digital Logic Design",
-    "Microprocessors",
-    "Microcontrollers",
-    "Basic Electrical Engineering",
-    "Basic Electronics",
-    "Engineering Mechanics",
-    "Thermodynamics",
-    "Fluid Mechanics",
-    "Strength of Materials",
-    "Linear Algebra",
-    "Probability and Statistics"
+    "Database Management Systems","Operating Systems",
+    "Computer Networks","Software Engineering",
+    "Compiler Design","Theory of Computation",
+    "Artificial Intelligence","Machine Learning","Deep Learning",
+    "Data Science","Cloud Computing","Cyber Security",
+    "Distributed Systems","Web Development","Mobile App Development","DevOps",
+    "Digital Logic Design","Microprocessors","Microcontrollers",
+    "Basic Electrical Engineering","Basic Electronics",
+    "Engineering Mechanics","Thermodynamics","Fluid Mechanics",
+    "Strength of Materials","Linear Algebra","Probability and Statistics"
 ]
 
-# ── UI Styling ─────────────────────────
-st.markdown("""
-<style>
-.block-container {
-    padding-top: 2rem;
-}
-
-.card {
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #ffffff;
-    margin-bottom: 15px;
-}
-
-.title {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.meta {
-    font-size: 13px;
-    color: #555;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# ── Init ───────────────────────────────
-client = get_supabase_client()
-
+# ── SESSION ─────────────────────────────
 if "page" not in st.session_state:
     st.session_state.page = "Browse"
 
-# ── Sidebar ────────────────────────────
+# ── SIDEBAR ─────────────────────────────
 st.sidebar.title("Notes Hub")
 
 if st.sidebar.button("Browse Notes"):
@@ -92,16 +55,19 @@ st.sidebar.markdown("---")
 
 subject_filter = st.sidebar.selectbox(
     "Filter by Subject",
-    ["All"] + ENGINEERING_SUBJECTS
+    ["All"] + SUBJECTS
 )
 
-# ── Upload Page ────────────────────────
+# ── INIT ────────────────────────────────
+client = get_supabase_client()
+
+# ── UPLOAD PAGE ─────────────────────────
 if st.session_state.page == "Upload":
 
     st.title("Upload Note")
 
     title = st.text_input("Title")
-    subject = st.selectbox("Subject", ENGINEERING_SUBJECTS)
+    subject = st.selectbox("Subject", SUBJECTS)
     description = st.text_area("Description")
 
     file = st.file_uploader("Upload PDF or PPT", type=["pdf", "ppt", "pptx"])
@@ -132,7 +98,7 @@ if st.session_state.page == "Upload":
                 except Exception as e:
                     st.error(f"Error: {e}")
 
-# ── Browse Page ────────────────────────
+# ── BROWSE PAGE ─────────────────────────
 elif st.session_state.page == "Browse":
 
     st.title("Browse Notes")
@@ -141,11 +107,9 @@ elif st.session_state.page == "Browse":
 
     notes = get_all_notes(client)
 
-    # Filter
     if subject_filter != "All":
         notes = [n for n in notes if n["subject"] == subject_filter]
 
-    # Search
     if search:
         notes = [
             n for n in notes
@@ -160,11 +124,11 @@ elif st.session_state.page == "Browse":
         for i, note in enumerate(notes):
             with cols[i % 3]:
                 st.markdown(f"""
-                <div class="card">
-                    <div class="title">{note['title']}</div>
-                    <div class="meta">Subject: {note['subject']}</div>
-                    <div class="meta">{note.get('description', '')}</div>
-                    <div class="meta">Size: {note.get('file_size_kb', 0)} KB</div>
+                <div style="border:1px solid #ddd;padding:15px;border-radius:8px;margin-bottom:15px;">
+                    <div style="font-weight:600">{note['title']}</div>
+                    <div>Subject: {note['subject']}</div>
+                    <div>{note.get('description','')}</div>
+                    <div>Size: {note.get('file_size_kb',0)} KB</div>
                     <br>
                     <a href="{note['file_url']}" target="_blank">View</a>
                 </div>
